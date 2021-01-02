@@ -6,19 +6,19 @@
 
 #IncludeRegexTransform: 
 
-/mnt/usb2/sample_http_sample/src/http_server.cpp
+/home/sss22213/Desktop/simple_api_server/src/http_server.cpp
 http_server.hpp
-/mnt/usb2/sample_http_sample/src/http_server.hpp
+/home/sss22213/Desktop/simple_api_server/src/http_server.hpp
 
-/mnt/usb2/sample_http_sample/src/http_server.hpp
+/home/sss22213/Desktop/simple_api_server/src/http_server.hpp
 thread
 -
 vector
 -
 sockpp/tcp_acceptor.h
-/mnt/usb2/sample_http_sample/src/sockpp/tcp_acceptor.h
+/home/sss22213/Desktop/simple_api_server/src/sockpp/tcp_acceptor.h
 sockpp/version.h
-/mnt/usb2/sample_http_sample/src/sockpp/version.h
+/home/sss22213/Desktop/simple_api_server/src/sockpp/version.h
 iostream
 -
 string

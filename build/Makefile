@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/usb2/sample_http_sample
+CMAKE_SOURCE_DIR = /home/sss22213/Desktop/simple_api_server
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/usb2/sample_http_sample/build
+CMAKE_BINARY_DIR = /home/sss22213/Desktop/simple_api_server/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/usb2/sample_http_sample/build/CMakeFiles /mnt/usb2/sample_http_sample/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sss22213/Desktop/simple_api_server/build/CMakeFiles /home/sss22213/Desktop/simple_api_server/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/usb2/sample_http_sample/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sss22213/Desktop/simple_api_server/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

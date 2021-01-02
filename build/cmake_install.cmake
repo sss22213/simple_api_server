@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/usb2/sample_http_sample
+# Install script for directory: /home/sss22213/Desktop/simple_api_server
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/mnt/usb2/sample_http_sample/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/sss22213/Desktop/simple_api_server/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

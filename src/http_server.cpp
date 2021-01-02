@@ -28,7 +28,6 @@ void socket_process::run_socket(){
     while (true) {
         // Accept a new client connection
         sockpp::tcp_socket sock = acc.accept();
-
         if (!sock) {
             cerr << "Error accepting incoming connection: "
                 << acc.last_error_str() << endl;
@@ -46,35 +45,44 @@ void socket_process::run_echo(sockpp::tcp_socket sock){
 	char buf[25600];
     const char* response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
     if((n = sock.read(buf, sizeof(buf))) > 0){
-        this->analysis(buf);
+        // analysis
+        this->get_response(this->analysis(buf));
+        // response
     }
     sock.write_n(response, strlen(response));
 	cout << "Connection closed from " << sock.peer_address() << endl;
 }
 
-route::route(){
-
-}
-
 std::map<std::string, std::string> socket_process::analysis(std::string http_request){
+    std::map<std::string, std::string> http_request_m;
+    std::string body, tmp;
+    bool header_body_flag = true;
     //
-    std::map<std::string, std::string> http_request_m; 
-    // http request
     std::vector<std::string> http_request_v;
     std::string::iterator str_begin = http_request.begin();
     std::string::iterator str_end = http_request.end();
-    std::string tmp;
     while(str_begin!=str_end){
-        if((*str_begin)=='\n' && *(str_begin-1)=='\r'){
-            http_request_v.push_back(tmp);
-            tmp.clear();
+        if(header_body_flag){
+            // catch header
+            if((*str_begin)=='\n' && *(str_begin-1)=='\r'){
+                http_request_v.push_back(tmp);
+                tmp.clear();
+            }
+            else{
+                tmp.push_back(*str_begin);
+            }
+            if((*str_begin)=='\n' && *(str_begin-1)=='\r' && *(str_begin-2)=='\n' && *(str_begin-3)=='\r'){
+                header_body_flag = false;
+            }
         }
         else{
-            tmp.push_back(*str_begin);
+            body.push_back(*str_begin);
+            // catch body (after Content-Length)
         }
         str_begin++;
     }
-    // analysis
+    http_request_m["method"] = http_request_v[0];
+    /*
     // method
     std::string *ptr_method = http_request_header;
     while((*ptr_method) != "NULL"){
@@ -88,7 +96,8 @@ std::map<std::string, std::string> socket_process::analysis(std::string http_req
     smatch sm;
     regex_search(http_request_v[0], sm, regex("/[A-Za-z0-9]*"));
     http_request_m["route"] = sm[0];
-    // get header
+    */
+    // header
     std::vector<std::string>::iterator http_request_begin_i = http_request_v.begin();
     std::vector<std::string>::iterator http_request_end_i = http_request_v.end();
     while(http_request_begin_i != http_request_end_i){
@@ -96,7 +105,42 @@ std::map<std::string, std::string> socket_process::analysis(std::string http_req
         if(header_tail_loc > 0)
             http_request_m[(*http_request_begin_i).substr(0, header_tail_loc)] = \
                         (*http_request_begin_i).substr(header_tail_loc + 2, (*http_request_begin_i).size()-1);
-        std::cout << *http_request_begin_i << std::endl;
         http_request_begin_i++;
     }
+    return http_request_m;
+}
+
+route::route(std::string route_path, void(*callback)(void* argument), std::string method){
+    this->route_text_map_func[route_path] = callback;
+    this->method = method;
+}
+
+void socket_process::add_route(std::string route_body, void(*callback)(void* argument), std::string method){
+    route_v.push_back(route(route_body, callback, method));
+}
+
+
+std::map<std::string, std::string> socket_process::get_response(std::map<std::string, std::string> http_request_m){
+    std::string method;
+    std::vector<std::string> routing;
+    // get method
+    std::string *ptr_method = http_request_header;
+    while((*ptr_method) != "NULL"){
+        if(pair_string(http_request_m["method"], *ptr_method)){
+            method = *ptr_method;
+            break;
+        }
+        ptr_method++;
+    }
+    // get routing
+    smatch sm;
+    std::string routing_tmp = http_request_m["method"];
+    while(regex_search(routing_tmp, sm, regex("/[A-Za-z0-9]*"))){
+        // ripple
+        if(sm.str().compare("/1"))
+            std::cout << sm.str() << std::endl;
+        routing_tmp = sm.suffix();
+    }
+    //
+    return std::map<std::string, std::string>();
 }

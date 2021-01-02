@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/mnt/usb2/sample_http_sample/src/http_server.cpp" "/mnt/usb2/sample_http_sample/build/CMakeFiles/main.dir/src/http_server.cpp.o"
-  "/mnt/usb2/sample_http_sample/src/main.cpp" "/mnt/usb2/sample_http_sample/build/CMakeFiles/main.dir/src/main.cpp.o"
+  "/home/sss22213/Desktop/simple_api_server/src/http_server.cpp" "/home/sss22213/Desktop/simple_api_server/build/CMakeFiles/main.dir/src/http_server.cpp.o"
+  "/home/sss22213/Desktop/simple_api_server/src/main.cpp" "/home/sss22213/Desktop/simple_api_server/build/CMakeFiles/main.dir/src/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
