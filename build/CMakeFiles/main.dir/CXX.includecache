@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/usb2/sample_http_sample/src/http_server.cpp
+http_server.hpp
+/mnt/usb2/sample_http_sample/src/http_server.hpp
+
+/mnt/usb2/sample_http_sample/src/http_server.hpp
+thread
+-
+vector
+-
+sockpp/tcp_acceptor.h
+/mnt/usb2/sample_http_sample/src/sockpp/tcp_acceptor.h
+sockpp/version.h
+/mnt/usb2/sample_http_sample/src/sockpp/version.h
+iostream
+-
+string
+-
+map
+-
+regex
+-
+
