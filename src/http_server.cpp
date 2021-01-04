@@ -43,13 +43,16 @@ void socket_process::run_socket(){
 void socket_process::run_echo(sockpp::tcp_socket sock){
     ssize_t n;
 	char buf[25600];
-    const char* response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
+    std::string response;
     if((n = sock.read(buf, sizeof(buf))) > 0){
         // analysis
-        this->get_response(this->analysis(buf));
-        // response
+        response = this->get_response(this->analysis(buf));
     }
-    sock.write_n(response, strlen(response));
+    // bad request
+    if(response.size() < 5){
+        response = _400_response;
+    }
+    sock.write_n(response.c_str(), strlen(response.c_str()));
 	cout << "Connection closed from " << sock.peer_address() << endl;
 }
 
@@ -77,26 +80,12 @@ std::map<std::string, std::string> socket_process::analysis(std::string http_req
         }
         else{
             body.push_back(*str_begin);
-            // catch body (after Content-Length)
         }
         str_begin++;
     }
-    http_request_m["method"] = http_request_v[0];
-    /*
-    // method
-    std::string *ptr_method = http_request_header;
-    while((*ptr_method) != "NULL"){
-        if(pair_string(http_request_v[0], *ptr_method)){
-            http_request_m["method"] = *ptr_method;
-            break;
-        }
-        ptr_method++;
-    }
-    // route
-    smatch sm;
-    regex_search(http_request_v[0], sm, regex("/[A-Za-z0-9]*"));
-    http_request_m["route"] = sm[0];
-    */
+    http_request_m["method"] = http_request_v[0]; // http method
+    http_request_m["body"] = body; // body 
+    http_request_m["route"] = get_routing(http_request_v[0]); // route
     // header
     std::vector<std::string>::iterator http_request_begin_i = http_request_v.begin();
     std::vector<std::string>::iterator http_request_end_i = http_request_v.end();
@@ -110,17 +99,19 @@ std::map<std::string, std::string> socket_process::analysis(std::string http_req
     return http_request_m;
 }
 
-route::route(std::string route_path, void(*callback)(void* argument), std::string method){
-    this->route_text_map_func[route_path] = callback;
+route::route(std::string route_path, std::string(*callback)(std::string), std::string method){
+    // this->route_text_map_func[route_path] = callback;
+    this->callback_func = callback;
     this->method = method;
+    this->routing_path_v = routing_analysis(route_path);
+    this->route_path_s = route_path;
 }
 
-void socket_process::add_route(std::string route_body, void(*callback)(void* argument), std::string method){
+void socket_process::add_route(std::string route_body, std::string(*callback)(std::string), std::string method){
     route_v.push_back(route(route_body, callback, method));
 }
 
-
-std::map<std::string, std::string> socket_process::get_response(std::map<std::string, std::string> http_request_m){
+std::string socket_process::get_response(std::map<std::string, std::string> http_request_m){
     std::string method;
     std::vector<std::string> routing;
     // get method
@@ -132,15 +123,80 @@ std::map<std::string, std::string> socket_process::get_response(std::map<std::st
         }
         ptr_method++;
     }
+    // find route
+    std::vector<route>::iterator route_v_begin = route_v.begin();
+    std::vector<route>::iterator route_v_end = route_v.end();
+    while(route_v_begin!=route_v_end){
+        if(route_v_begin->route_path_s.compare(http_request_m["route"]) == 0){
+            if(method == route_v_begin->method){
+                return route_v_begin->callback_func(http_request_m["body"]);
+            }
+            else
+                // method not found
+                return _405_response;
+            break;
+        }
+        route_v_begin++;
+    }
+    return _404_response;
+}
+
+std::vector<std::string> routing_analysis(std::string route_path){
+    std::vector<std::string> routing_path_v;
     // get routing
     smatch sm;
-    std::string routing_tmp = http_request_m["method"];
-    while(regex_search(routing_tmp, sm, regex("/[A-Za-z0-9]*"))){
+    while(regex_search(route_path, sm, regex("/[A-Za-z0-9]*"))){
         // ripple
         if(sm.str().compare("/1"))
-            std::cout << sm.str() << std::endl;
-        routing_tmp = sm.suffix();
+            routing_path_v.push_back(sm.str());
+        route_path = sm.suffix();
     }
-    //
-    return std::map<std::string, std::string>();
+    return routing_path_v;
 }
+
+std::string socket_process::get_routing(std::string routing_path){
+    int block = 0;
+    std::string route_str;
+    while(!routing_path.empty()){
+        char route_c = routing_path.front();
+        routing_path.erase(routing_path.begin());
+        if(block == 1){
+            if(route_c!=' ')
+                route_str.push_back(route_c);
+        }
+        else if(block == 2)
+            break;
+        if(block == 0 && route_c ==' ')
+            block = 1;
+        else if(block == 1 && route_c ==' ')
+            block = 2;
+    }
+    return route_str;
+}
+
+std::string http_response::gen_http_response(std::string status, std::map<std::string, std::string> header, \
+                                            std::string body){
+    //
+    this->status = status;
+    this->header = header;
+    this->body = body;
+    //
+    std::string http_response_frame = "HTTP/1.1 ";
+    http_response_frame.append(status);
+    http_response_frame.append("\r\n");
+    std::map<std::string, std::string>::iterator header_begin = header.begin();
+    std::map<std::string, std::string>::iterator header_end = header.end();
+    while(header_begin!=header_end){
+        http_response_frame.append(header_begin->first);
+        http_response_frame.append(": ");
+        http_response_frame.append(header_begin->second);
+        http_response_frame.append("\r\n");
+        header_begin++;
+    }
+    http_response_frame.append("Content-Length: ");
+    http_response_frame.append(std::to_string(body.size()));
+    http_response_frame.append("\r\n\r\n");
+    http_response_frame.append(body);
+    http_response_frame.append("\r\n");
+    return http_response_frame;
+};

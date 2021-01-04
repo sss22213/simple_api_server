@@ -1,3 +1,0 @@
-/home/sss22213/Desktop/simple_api_server/build/CMakeFiles/rebuild_cache.dir
-/home/sss22213/Desktop/simple_api_server/build/CMakeFiles/edit_cache.dir
-/home/sss22213/Desktop/simple_api_server/build/CMakeFiles/main.dir
