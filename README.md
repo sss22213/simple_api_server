@@ -35,21 +35,24 @@ make
 #include "http_client.hpp"
 
 static std::string get_ip(void){
-    
-    http_client::http_client http_client1("api.ipify.org", 80); // declare http client http_client::http_client(std::string host, iny port)
-    
-    http_client::http_response http_response1; // declare http_response http_client::http_response::http_response()
+    // declare http client http_client::http_client(std::string host, iny port)
+    http_client::http_client http_client1("api.ipify.org", 80); 
+    // declare http_response http_client::http_response::http_response()
+    http_client::http_response http_response1;
     // create http header and value
     std::map<std::string, std::string> header;
     header["HOST"] = "api.ipify.org";
     header["Connection"] = "keep-alive";
-    http_client::http_request http_request("/", "GET", header, ""); declare http_request http_client::http_request(std::string route, std::string method, std::map<std::string, std::string> header_value, std::string body)
-    http_client1.send_request(http_request, &http_response1); // send http request http_client::http_request::send_request(http_client::http_request, http_client::http_response)
+    // declare http_request http_client::http_request(std::string route, std::string method, std::map<std::string, std::string> header_value, std::string body)
+    http_client::http_request http_request("/", "GET", header, ""); 
+    // send http request http_client::http_request::send_request(http_client::http_request, http_client::http_response)
+    http_client1.send_request(http_request, &http_response1);
     return http_response1.body;
 }
 
 std::string home(std::string body){
-    http_server::http_response http_response1; // declare http_response http_server::http_response::http_response()
+    // declare http_response http_server::http_response::http_response()
+    http_server::http_response http_response1;
     std::map<std::string, std::string> response;
     response["Content-Type"] = "application/json";
     // gen_http_response http_server::http_response::gen_http_response(std::string http_status, std::map<std::string, std::string> response_header_value, std::string body)
