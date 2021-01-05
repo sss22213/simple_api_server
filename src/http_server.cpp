@@ -19,11 +19,11 @@ bool pair_string(std::string m_str, std::string sub_str){
     return false;
 }
 
-socket_process::socket_process(int port){
+http_server::socket_process::socket_process(int port){
     this->listen_port = port;
 }
 
-void socket_process::run_socket(){
+void http_server::socket_process::run_socket(){
     sockpp::tcp_acceptor acc(this->listen_port);
     while (true) {
         // Accept a new client connection
@@ -40,7 +40,7 @@ void socket_process::run_socket(){
     }
 }
 
-void socket_process::run_echo(sockpp::tcp_socket sock){
+void http_server::socket_process::run_echo(sockpp::tcp_socket sock){
     ssize_t n;
 	char buf[25600];
     std::string response;
@@ -56,7 +56,7 @@ void socket_process::run_echo(sockpp::tcp_socket sock){
 	cout << "Connection closed from " << sock.peer_address() << endl;
 }
 
-std::map<std::string, std::string> socket_process::analysis(std::string http_request){
+std::map<std::string, std::string> http_server::socket_process::analysis(std::string http_request){
     std::map<std::string, std::string> http_request_m;
     std::string body, tmp;
     bool header_body_flag = true;
@@ -99,7 +99,7 @@ std::map<std::string, std::string> socket_process::analysis(std::string http_req
     return http_request_m;
 }
 
-route::route(std::string route_path, std::string(*callback)(std::string), std::string method){
+http_server::route::route(std::string route_path, std::string(*callback)(std::string), std::string method){
     // this->route_text_map_func[route_path] = callback;
     this->callback_func = callback;
     this->method = method;
@@ -107,11 +107,11 @@ route::route(std::string route_path, std::string(*callback)(std::string), std::s
     this->route_path_s = route_path;
 }
 
-void socket_process::add_route(std::string route_body, std::string(*callback)(std::string), std::string method){
+void http_server::socket_process::add_route(std::string route_body, std::string(*callback)(std::string), std::string method){
     route_v.push_back(route(route_body, callback, method));
 }
 
-std::string socket_process::get_response(std::map<std::string, std::string> http_request_m){
+std::string http_server::socket_process::get_response(std::map<std::string, std::string> http_request_m){
     std::string method;
     std::vector<std::string> routing;
     // get method
@@ -141,7 +141,7 @@ std::string socket_process::get_response(std::map<std::string, std::string> http
     return _404_response;
 }
 
-std::vector<std::string> routing_analysis(std::string route_path){
+std::vector<std::string> http_server::routing_analysis(std::string route_path){
     std::vector<std::string> routing_path_v;
     // get routing
     smatch sm;
@@ -154,7 +154,7 @@ std::vector<std::string> routing_analysis(std::string route_path){
     return routing_path_v;
 }
 
-std::string socket_process::get_routing(std::string routing_path){
+std::string http_server::socket_process::get_routing(std::string routing_path){
     int block = 0;
     std::string route_str;
     while(!routing_path.empty()){
@@ -174,7 +174,7 @@ std::string socket_process::get_routing(std::string routing_path){
     return route_str;
 }
 
-std::string http_response::gen_http_response(std::string status, std::map<std::string, std::string> header, \
+std::string http_server::http_response::gen_http_response(std::string status, std::map<std::string, std::string> header, \
                                             std::string body){
     //
     this->status = status;

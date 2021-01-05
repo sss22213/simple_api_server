@@ -1,9 +1,8 @@
 project(task)
 cmake_minimum_required(VERSION 3.3)
 add_definitions(-std=c++14 -Wall -g)
-find_package(nlohmann_json REQUIRED)
 include_directories(/usr/local/include)
 link_directories(/usr/local/lib)
 #
-add_executable(main src/main.cpp src/http_server.cpp)
-target_link_libraries(main -lsockpp -lpthread -lcurlpp -lcurl)
+add_executable(main src/main.cpp src/http_server.cpp src/http_client.cpp)
+target_link_libraries(main -lsockpp -lpthread)

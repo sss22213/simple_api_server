@@ -1,0 +1,3 @@
+/mnt/usb2/simple_api_server/build/CMakeFiles/rebuild_cache.dir
+/mnt/usb2/simple_api_server/build/CMakeFiles/edit_cache.dir
+/mnt/usb2/simple_api_server/build/CMakeFiles/main.dir
