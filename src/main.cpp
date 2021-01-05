@@ -25,7 +25,6 @@ std::string home(std::string body){
 
 
 int main(){
-    get_ip();
     http_server::socket_process socket_process1(7800);
     socket_process1.add_route("/api/v1/get_global_ip/4AAQSkZJRgABAQAAAQABAAD2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw", home, "POST");
     socket_process1.run_socket();
