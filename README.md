@@ -1,11 +1,12 @@
-fake broker 
+simple_api_server
 ===
 
-This repository contains fake broker.
+This repository contains simple http server and http client
 
 ## Feature:
 - using tcp.
-- not support ssl.
+- http server only support method of post and get
+- http client only support http
 
 ## Depend:
 
@@ -20,13 +21,6 @@ sudo make install
 sudo ldconfig
 ```
 
-  - Install json
-```
-git clone https://github.com/nlohmann/json.git
-cd json && cmake . && make -j4 && sudo make install
-sudo ldconfig
-```
-
 ## Install:
 ```
 mkdir build
@@ -34,9 +28,12 @@ cd build
 cmake ..
 make
 ```
+## Example:
+```
+
+```
 
 
 # Refenerce
 * sockpp: https://github.com/fpagliughi/sockpp.git
-* json: https://github.com/nlohmann/json.git
 
