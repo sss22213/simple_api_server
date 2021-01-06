@@ -21,6 +21,11 @@ sudo make install
 sudo ldconfig
 ```
 
+  - Install DOXYGEN
+```bash
+sudo apt-get install doxygen
+```
+
 ## Install:
 ```bash
 mkdir build
@@ -28,6 +33,13 @@ cd build
 cmake ..
 make
 ```
+
+## Document:
+```bash
+make docs
+```
+
+
 ## Example:
 
 ```C++
